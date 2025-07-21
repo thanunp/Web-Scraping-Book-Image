@@ -54,12 +54,14 @@ def scrape_search_results(search_url, max_products=0):
                     print(f"❌ Error for {url}: {exc}")
                     results.append({"Product-URL": url, "ISBN": "N/A", "Cover-url": "N/A"})
 
-        # Save results to CSV with ISBN as the first column, then Cover-url, then Product URL
+        # Save results to CSV with header: isbn,cover_url,product_url
         from datetime import datetime
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_filename = f"naiin_search_keigo_with_isbn_{timestamp}.csv"
         df = pd.DataFrame(results)
-        df = df[["ISBN", "Cover-url", "Product-URL"]]
+        # Rename columns to match required header
+        df = df.rename(columns={"ISBN": "isbn", "Cover-url": "cover_url", "Product-URL": "product_url"})
+        df = df[["isbn", "cover_url", "product_url"]]
         df.to_csv(output_filename, index=False, encoding='utf-8-sig')
 
         print("\n==============================")
@@ -176,6 +178,6 @@ def get_isbn_and_cover_with_selenium(product_url):
 # df.to_csv("naiin_search_keigo_with_isbn.csv", index=False, encoding='utf-8-sig')
 
 if __name__ == "__main__":
-    SEARCH_URL = "https://www.naiin.com/search-result?title=keigo"
+    SEARCH_URL = "https://www.naiin.com/search-result?title=โทโฮ"
     # Set max_products to desired number, 0 for all
     scrape_search_results(SEARCH_URL, max_products=0)
